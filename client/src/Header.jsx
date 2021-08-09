@@ -19,13 +19,13 @@ export default function Header(){
           </Navbar.Brand>
           <Nav>
             <Nav.Item>
-              <Nav.Link className={state?"d-none":""} href="/login">Войти</Nav.Link>
+              <Nav.Link className={state?'d-none':''} href="/login">Войти</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className={state?"d-none":""} href="/register">Создать аккаунт</Nav.Link>
+              <Nav.Link className={state?'d-none':''} href="/register">Создать аккаунт</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link onClick={()=>setState(null)} className={!state?"d-none":""} href="/logout">Выйти</Nav.Link>
+              <Nav.Link className={!state?'d-none':''} onClick={()=> fetch('/logout')} href="/">Выйти</Nav.Link>
             </Nav.Item>
           </Nav>
         </Container>

@@ -5,6 +5,7 @@ const SeqeulizeStore = require('connect-session-sequelize')(session.Store);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+let router = express.Router();
 
 const sequelize = new Sequelize(
   "postgres://myproj:myproj@localhost:5432/interesthub"
@@ -29,7 +30,6 @@ const User = sequelize.define("user", {
 passport.use(new LocalStrategy((username, password, done)=>{
     User.findOne({where:{username: username}})
         .then((user)=>{
-            console.log(user.id);
             if (!user) { return done(null, false); }
             bcrypt.compare(password, user.password)
                 .then(result=>{
@@ -51,6 +51,7 @@ let sessionStore = new SeqeulizeStore({
     db: sequelize,
 });
 
+
 app.use(session({
     secret: 'my secret',
     resave: false,
@@ -64,9 +65,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));
+app.use('/', router);
 
-app.post('/register', (req, res)=>{
+router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));
+
+router.post('/register', (req, res)=>{
     let {username, password} = req.body;
     bcrypt.genSalt(10, (err, salt)=>{
         bcrypt.hash(password, salt)
@@ -78,12 +81,12 @@ app.post('/register', (req, res)=>{
     });
 });
 
-app.get('/logout', (req, res)=>{
+router.get('/logout', (req, res)=>{
     req.logout();
-    res.redirect('/');
+    res.send({authenticated: req.isAuthenticated()});
 });
 
-app.get('/isLoggedIn', (req, res)=>res.send(req.user!=null));
+router.get('/isLoggedIn', (req, res)=>res.send(req.isAuthenticated()));
 
 sequelize.sync().then(() => {
   app.listen(PORT).then = () => {
