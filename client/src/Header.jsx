@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react';
 import {Navbar, Container, Nav, Dropdown} from 'react-bootstrap';
-import DropdownItem from 'react-bootstrap/esm/DropdownItem';
-import pfp from './kisspng-computer-icons-portable-network-graphics-avatar-ic-5ba3c66e306b15.0756271715374598221983.png';
 
 function NavItems({isLoggedIn}){
+  const [pfp, setPfp] = React.useState(null);
+  useEffect(()=>{
+    if (isLoggedIn){
+      fetch('/profilepicture')
+        .then(response=>response.blob())
+        .then(image=>setPfp(URL.createObjectURL(image)));
+    }
+  }, [isLoggedIn]);
   if (isLoggedIn){
     return(
       <Nav>
@@ -12,10 +18,12 @@ function NavItems({isLoggedIn}){
         </Nav.Item>
         <Dropdown>
           <Dropdown.Toggle variant='dark'>
-            <img style={{width: '30px', height: '30px'}} src={pfp} alt="" />
+            <img style={{height: '30px', width: '30px'}} src={pfp} alt="" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item href="/profile">Профиль</Dropdown.Item>
+            <Dropdown.Item href="#">ЛС</Dropdown.Item>
+            <Dropdown.Divider/>
             <Dropdown.Item onClick={()=> fetch('/logout')} href="/">Выйти</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
