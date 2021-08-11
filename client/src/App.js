@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { LoginPage, MainPage, RegisterPage, ProfilePage } from './pages/pages'; 
+import { LoginPage, MainPage, RegisterPage, ProfilePage, CommunitiesPage } from './pages/pages'; 
 import Header from './Header';
 
 function PrivateRoute({component: Component, isLoggedIn, ...rest}){
@@ -27,12 +27,13 @@ function App() {
       <Header isLoggedIn={state.isAuthenticated}/>
       <BrowserRouter>
         <Switch>
-          <Route component={LoginPage} path='/login/'/>
+          <Route component={LoginPage} path='/login'/>
           <Route component={RegisterPage} path='/register'/>
           <PrivateRoute component={ProfilePage} path='/profile/:id' isLoggedIn={state.isAuthenticated}/>
           <Route path='/profile'>
             <Redirect to={`/profile/${state.id}`}/>
           </Route>
+          <Route component={CommunitiesPage} path='/communities'/>
           <Route path='/' component={MainPage}/>
         </Switch>
       </BrowserRouter>

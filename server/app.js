@@ -38,6 +38,16 @@ const User = sequelize.define("user", {
   }
 });
 
+const Community = sequelize.define('community', {
+  communityname: {
+    type: DataTypes.TEXT,
+    allowNull: false 
+  },
+  description: {
+    type: DataTypes.TEXT
+  }
+})
+
 passport.use(new LocalStrategy((username, password, done)=>{
     User.findOne({where:{username: username}})
         .then((user)=>{
@@ -159,6 +169,18 @@ router.get('/getuser/:id', (req, res)=>{
       });
   }
   else { res.sendStatus(403); }
+})
+
+router.get('/communities', (req, res)=>{
+  Community.findAll()
+    .then(result => res.send(result));
+});
+
+router.post('/newcommunity', (req, res)=>{
+  let {communityname, description} = req.body;
+  let newcommunity = Community.build({communityname: communityname, description: description});
+  newcommunity.save()
+    .then(()=>res.redirect('/communities'));
 })
 
 sequelize.sync().then(() => {
