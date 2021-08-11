@@ -11,14 +11,18 @@ function NavItems({isLoggedIn}){
     }
   }, [isLoggedIn]);
   if (isLoggedIn){
+    if (!pfp) return null;
     return(
       <Nav>
+        <Nav.Item>
+          <Nav.Link href='/communities'>Сообщества</Nav.Link>
+        </Nav.Item>
         <Nav.Item>
           <Nav.Link href='/hub'>Хаб</Nav.Link>
         </Nav.Item>
         <Dropdown>
           <Dropdown.Toggle variant='dark'>
-            <img style={{height: '30px', width: '30px'}} src={pfp} alt="" />
+            <img style={{height: '30px', width: '30px'}} src={pfp} alt="Аватарка" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item href="/profile">Профиль</Dropdown.Item>
@@ -46,22 +50,14 @@ function NavItems({isLoggedIn}){
   }
 }
 
-export default function Header(){
-    let [state, setState] = React.useState(false);
-    useEffect(()=>{
-      fetch('/isLoggedIn')
-        .then(res=>res.json())
-        .then(data=>{ 
-          setState(data);
-        });
-    }, []);
+export default function Header({isLoggedIn}){
     return(
         <Navbar bg="dark" variant='dark'>
         <Container>
           <Navbar.Brand href="/">
             InterestHub
           </Navbar.Brand>
-          <NavItems isLoggedIn={state}/>
+          <NavItems isLoggedIn={isLoggedIn}/>
         </Container>
       </Navbar>
     );

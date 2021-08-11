@@ -119,13 +119,49 @@ router.get('/logout', (req, res)=>{
     res.send({authenticated: req.isAuthenticated()});
 });
 
-router.get('/isLoggedIn', (req, res)=>res.send(req.isAuthenticated()));
+router.get('/profilepicture/:userid?', (req, res, next)=>{
+  if (!req.params.userid) { next(); return; }
+  User.findByPk(req.params.userid)
+    .then((user)=>{
+      if (!user) { res.send({message: 'Пользователя с таким ID не существует'}); }
+      res.sendFile(path.join(__dirname, 'uploads', user.profilepictureid));
+    });
+})
 
 router.get('/profilepicture', (req, res)=>{
+  if (!req.isAuthenticated()) { res.sendStatus(403); }
   res.sendFile(path.join(__dirname, 'uploads', req.user.profilepictureid));
 })
 
-sequelize.sync({force: true}).then(() => {
+router.get('/getcurrentuser', (req, res)=>{
+  if (req.user){
+    res.send({
+      isAuthenticated: true,
+      id: req.user.id,
+      username: req.user.username,
+      profilepictureid: req.user.profilepictureid
+    });
+  }
+  else { res.send({ isAuthenticated: false });}
+});
+
+router.get('/getuser/:id', (req, res)=>{
+  if (req.isAuthenticated()){
+    User.findByPk(req.params.id)
+      .then(user=>{
+        if (user){
+          res.send({
+            username: user.username,
+            profilepictureid: user.profilepictureid
+          });
+        }
+        else { res.send({message: 'Пользователя с таким ID не существует'}); }
+      });
+  }
+  else { res.sendStatus(403); }
+})
+
+sequelize.sync().then(() => {
   console.log('Model sync');
   sessionStore.sync().then(()=>{
     console.log('Storage sync');
