@@ -27,9 +27,9 @@ function App() {
   if (!state) return null;
   return (
     <div>
-      <Header isLoggedIn={state.isAuthenticated}/>
-      <BrowserRouter>
-        <Switch>
+      <Header isLoggedIn={state.isAuthenticated} updateState={updateState}/>
+      {/* <BrowserRouter> */}
+        {/* <Switch> */}
           <Route component={()=><LoginPage updateState={updateState}/>} path='/login'/>
           <Route component={RegisterPage} path='/register'/>
           <PrivateRoute component={ProfilePage} path='/profile/:id' isLoggedIn={state.isAuthenticated}/>
@@ -37,9 +37,9 @@ function App() {
             <Redirect to={`/profile/${state.id}`}/>
           </Route>
           <Route component={CommunitiesPage} path='/communities'/>
-          <Route path='/' component={MainPage}/>
-        </Switch>
-      </BrowserRouter>
+          <Route exact path='/' component={MainPage}/>
+        {/* </Switch> */}
+      {/* </BrowserRouter> */}
     </div>
   );
 }
