@@ -14,12 +14,15 @@ function PrivateRoute({component: Component, isLoggedIn, ...rest}){
 
 function App() {
   let [state, setState] = React.useState(null);
-  useEffect(()=>{
+  function updateState(){
     fetch('/getcurrentuser')
       .then(res=>res.json())
       .then(data=>{ 
         setState(data);
       });
+  }
+  useEffect(()=>{
+    updateState();
   }, []);
   if (!state) return null;
   return (
@@ -27,7 +30,7 @@ function App() {
       <Header isLoggedIn={state.isAuthenticated}/>
       <BrowserRouter>
         <Switch>
-          <Route component={LoginPage} path='/login'/>
+          <Route component={()=><LoginPage updateState={updateState}/>} path='/login'/>
           <Route component={RegisterPage} path='/register'/>
           <PrivateRoute component={ProfilePage} path='/profile/:id' isLoggedIn={state.isAuthenticated}/>
           <Route path='/profile'>

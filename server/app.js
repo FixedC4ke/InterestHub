@@ -7,6 +7,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
+const flash = require('connect-flash');
+const bodyParser = require('body-parser');
 let router = express.Router();
 
 const sequelize = new Sequelize(
@@ -15,7 +17,10 @@ const sequelize = new Sequelize(
 const app = express();
 const PORT = 8888;
 
-app.use(express.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(express.urlencoded());
+app.use(express.json());
 // app.use(express.static(__dirname));
 
 const User = sequelize.define("user", {
@@ -30,7 +35,7 @@ const User = sequelize.define("user", {
   },
   profilepictureid:{
     type: DataTypes.TEXT,
-    defaultValue: 'defaultpfp'
+    defaultValue: 'defaultpfp.svg'
   },
   email: {
     type: DataTypes.TEXT,
@@ -51,10 +56,14 @@ const Community = sequelize.define('community', {
 passport.use(new LocalStrategy((username, password, done)=>{
     User.findOne({where:{username: username}})
         .then((user)=>{
-            if (!user) { return done(null, false); }
+            if (!user) { return done(null, false, {
+              message: "Неверный логин и/или пароль"
+            }); }
             bcrypt.compare(password, user.password)
                 .then(result=>{
-                    if (!result) { return done(null, false); }
+                    if (!result) { return done(null, false, {
+                      message: "Неверный логин и/или пароль"
+                    }); }
                     else { return done(null, user); }
                 });
         })
@@ -85,9 +94,20 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(flash());
+
 app.use('/', router);
 
-router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));
+router.post('/login', multer().none(), function (req, res, next){
+  passport.authenticate('local', function(err, user, info){
+    if (err) { return next(err); }
+    if (!user) { return res.status(401).send({ message: info.message, success: false }); }
+    req.logIn(user, function(err){
+      if (err) { return next(err); }
+      return res.send({ message: '', success: true, user: user });
+    })
+  })(req, res, next);
+});
 
 const storage = multer.diskStorage({
   destination: (req, file, cb)=>{
@@ -108,6 +128,7 @@ router.post('/register', upload.single('avatar'), (req, res)=>{
     bcrypt.genSalt(10, (err, salt)=>{
         bcrypt.hash(password, salt)
         .then((hash)=>{
+            if (!req.file) { req.file = { filename: 'defaultpfp.svg' }; }
             let newuser = User.build(
               {
                 username: username, 
@@ -126,7 +147,7 @@ router.post('/register', upload.single('avatar'), (req, res)=>{
 
 router.get('/logout', (req, res)=>{
     req.logout();
-    res.send({authenticated: req.isAuthenticated()});
+    res.send(200);
 });
 
 router.get('/profilepicture/:userid?', (req, res, next)=>{
@@ -183,7 +204,7 @@ router.post('/newcommunity', (req, res)=>{
     .then(()=>res.redirect('/communities'));
 })
 
-sequelize.sync().then(() => {
+sequelize.sync({force: true}).then(() => {
   console.log('Model sync');
   sessionStore.sync().then(()=>{
     console.log('Storage sync');
