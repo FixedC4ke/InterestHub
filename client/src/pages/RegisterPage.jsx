@@ -20,7 +20,7 @@ export default function RegisterPage(){
                 setErrorMsg(data.message);
             });
     }
-    if (state) { return <Redirect to='/'/> }
+    if (state) { return <Redirect to='/login'/> }
     return (
         <div>
             <Container>
