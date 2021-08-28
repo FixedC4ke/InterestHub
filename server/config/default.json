@@ -1,0 +1,16 @@
+{
+    "databaseConnection": {
+        "host": "localhost",
+        "dialect": "postgres",
+        "username": "myproj",
+        "password": "myproj",
+        "port": 5432,
+        "database": "interesthub"
+    },
+    "expressConfig":{
+        "port": 8888
+    },
+    "sequelizeSyncMode":{
+        "force": true
+    }
+}
