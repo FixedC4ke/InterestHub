@@ -49,28 +49,29 @@ module.exports = function (User, Community, passport) {
           message: 'Пользователь с указанным никнеймом уже существует',
           success: false,
         });
-      }
-    });
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(password, salt).then((hash) => {
-        if (!req.file) {
-          req.file = { filename: 'defaultpfp.svg' };
-        }
-        let newuser = User.build({
-          username: username,
-          password: hash,
-          profilepictureid: req.file.filename,
-          email: email,
-        });
-        newuser
-          .save()
-          .then(() => {
-            return res.status(200).send({ message: '', success: true });
-          })
-          .catch((err) => {
-            return res.status(403).send({ message: err, success: false });
+      } else {
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(password, salt).then((hash) => {
+            if (!req.file) {
+              req.file = { filename: 'defaultpfp.svg' };
+            }
+            let newuser = User.build({
+              username: username,
+              password: hash,
+              profilepictureid: req.file.filename,
+              email: email,
+            });
+            newuser
+              .save()
+              .then(() => {
+                return res.status(200).send({ message: '', success: true });
+              })
+              .catch((err) => {
+                return res.status(403).send({ message: err, success: false });
+              });
           });
-      });
+        });
+      }
     });
   });
 
