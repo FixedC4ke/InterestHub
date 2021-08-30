@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {Navbar, Container, Nav, Dropdown} from 'react-bootstrap';
+import {Navbar, Container, Nav, Dropdown, Image} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 function NavItems({isLoggedIn, updateState}){
@@ -22,8 +22,8 @@ function NavItems({isLoggedIn, updateState}){
           <Nav.Link as={Link} to='/hub'>Хаб</Nav.Link>
         </Nav.Item>
         <Dropdown>
-          <Dropdown.Toggle variant='dark'>
-            <img style={{height: '30px', width: '30px'}} src={pfp} alt="Аватарка" />
+          <Dropdown.Toggle variant='dark' style={{height: '100%'}}>
+            <Image src={pfp} rounded style={{height: '100%'}}/>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item as={Link} to="/profile">Профиль</Dropdown.Item>
@@ -58,12 +58,12 @@ function NavItems({isLoggedIn, updateState}){
 export default function Header({isLoggedIn, updateState}){
     return(
         <Navbar bg="dark" variant='dark'>
-        <Container>
-          <Navbar.Brand as={Link} to='/'>
-            InterestHub
-          </Navbar.Brand>
-          <NavItems isLoggedIn={isLoggedIn} updateState={updateState}/>
-        </Container>
+          <Container>
+            <Navbar.Brand as={Link} to='/'>
+              InterestHub
+            </Navbar.Brand>
+            <NavItems isLoggedIn={isLoggedIn} updateState={updateState}/>
+          </Container>
       </Navbar>
     );
 }

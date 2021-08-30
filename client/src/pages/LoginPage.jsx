@@ -22,7 +22,7 @@ export default function LoginPage(props){
                 }
             });
     }
-    if (state) { return <Redirect to='/'/> }
+    if (state) { return <Redirect to='/hub'/> }
     return (
         <div>
             <Container>

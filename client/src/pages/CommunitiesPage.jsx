@@ -37,27 +37,14 @@ export default function CommunitiesPage(){
                     <Button onClick={()=> setShow(true)} variant='primary'>Создать сообщество</Button>
                 </Card.Header>
                 <Card.Body>
-                    <Tab.Container>
-                            <Row>
-                                <Col sm={4}>
-                                    <ListGroup>
-                                        {communities.map((community)=>{
-                                            return (
-                                            <ListGroup.Item action>
-                                                {community.communityname}
-                                            </ListGroup.Item>)
-                                        })}
-                                    </ListGroup>
-                                </Col>
-                                <Col sm={8}>
-                                    <Tab.Content>
-                                        <Tab.Pane>
-
-                                        </Tab.Pane>
-                                    </Tab.Content>
-                                </Col>
-                            </Row>
-                        </Tab.Container>
+                    <ListGroup>
+                        {communities.map((community)=>{
+                            return (
+                            <ListGroup.Item action>
+                                {community.communityname}
+                            </ListGroup.Item>)
+                        })}
+                    </ListGroup>
                 </Card.Body>
             </Card>
         </Container>

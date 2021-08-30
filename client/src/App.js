@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { LoginPage, MainPage, RegisterPage, ProfilePage, CommunitiesPage } from './pages/pages'; 
 import Header from './Header';
+import Footer from './Footer';
 
 function PrivateRoute({component: Component, isLoggedIn, ...rest}){
   return (
@@ -28,18 +29,15 @@ function App() {
   return (
     <div>
       <Header isLoggedIn={state.isAuthenticated} updateState={updateState}/>
-      {/* <BrowserRouter> */}
-        {/* <Switch> */}
-          <Route component={()=><LoginPage updateState={updateState}/>} path='/login'/>
-          <Route component={RegisterPage} path='/register'/>
-          <PrivateRoute component={ProfilePage} path='/profile/:id' isLoggedIn={state.isAuthenticated}/>
-          <Route path='/profile'>
-            <Redirect to={`/profile/${state.id}`}/>
-          </Route>
-          <Route component={CommunitiesPage} path='/communities'/>
-          <Route exact path='/' component={MainPage}/>
-        {/* </Switch> */}
-      {/* </BrowserRouter> */}
+      <Route component={()=><LoginPage updateState={updateState}/>} path='/login'/>
+      <Route component={RegisterPage} path='/register'/>
+      <PrivateRoute component={ProfilePage} path='/profile/:id' isLoggedIn={state.isAuthenticated}/>
+      <Route path='/profile'>
+        <Redirect to={`/profile/${state.id}`}/>
+      </Route>
+      <Route component={CommunitiesPage} path='/communities'/>
+      <Route exact path='/' component={MainPage}/>
+      <Footer/>
     </div>
   );
 }
