@@ -16,7 +16,7 @@
             <b-form-group label="Пароль" label-for="password" class="mb-3">
                 <b-form-input id="password" name="password" type="password" placeholder="Введите пароль" required/>
             </b-form-group>
-            <b-alert variant="danger" :show="errorMessage.length>0">{{errorMessage}}</b-alert>
+            <b-alert variant="danger" :show="errorMsg.length>0">{{errorMsg}}</b-alert>
             <b-button type="submit" variant="primary">Войти</b-button>
         </b-form>
     </b-card>
@@ -24,7 +24,10 @@
 
 <script>
 export default {
-    name: "LoginPage",
+    props: {
+        updateState: Function
+    },
+    name: "Login",
     methods: {
         submitHandler: function(e){
             let data = new FormData(e.target);
@@ -34,18 +37,18 @@ export default {
                 body: data
             })
             .then(res=>res.json())
-            .then(res=>{
-                this.errorMessage = res.message;
-                if (res.success){
+            .then(data=>{
+                this.errorMsg = data.message;
+                if (data.success){
+                    this.updateState();
                     this.$router.push('/hub');
                 }
             });
-            console.log(data.get('username'));
         }
     },
     data(){
         return{
-            errorMessage: '',
+            errorMsg: '',
         }
     }
 }
