@@ -1,6 +1,6 @@
 # InterestHub
 
-Социальная сеть по интересам (Fullstack: React JS, NodeJS+Express, Postgresql)
+Социальная сеть по интересам (Fullstack: Vue JS, NodeJS+Express, Postgresql)
 
 Установка зависимостей (все команды выполняются из корневой директории проекта):
 
