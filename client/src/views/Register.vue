@@ -1,7 +1,7 @@
 <template>
     <b-card header="Регистрация" class="mt-3 mx-5">
         <b-form @submit.prevent="submitHandler">
-            <b-alert variant="danger"></b-alert>
+            <b-alert variant="danger" :show="errorMsg.length>0">{{errorMsg}}</b-alert>
             <b-form-group 
                 label="Имя пользователя" 
                 class="mb-3">

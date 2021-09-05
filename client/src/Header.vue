@@ -7,6 +7,9 @@
                     <b-nav-item to="/communities">Сообщества</b-nav-item>
                     <b-nav-item to="/hub">Хаб</b-nav-item>
                     <b-nav-item-dropdown>
+                        <template #button-content>
+                            <img class="pfpImg" :src="pfp" alt="Profile picture">
+                        </template>
                         <b-dropdown-item to="/profile">Профиль</b-dropdown-item>
                         <b-dropdown-item>ЛС</b-dropdown-item>
                         <b-dropdown-divider/>
@@ -32,10 +35,32 @@ export default {
     name: 'Header',
     methods: {
         logout: function(){
-            fetch('/logout');
-            this.updateState();
-            this.$router.push('/login');
+            fetch('/logout').then(()=>{
+                this.updateState();
+                this.$router.push('/login');
+            }
+            )
+            
+        },
+        getPfp: async function(){
+            let response = await fetch('/profilepicture');
+            let image = await response.blob();
+            return URL.createObjectURL(image);
         }
     },
+    data() {
+        return { 
+            pfp: null
+        }
+    },
+    mounted(){
+        this.getPfp().then(image=>this.pfp=image);
+    }
 }
 </script>
+
+<style scoped>
+    .pfpImg{
+        height: 1.2rem;
+    }
+</style>
