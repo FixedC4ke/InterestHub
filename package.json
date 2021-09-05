@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run start --prefix client\" \"npm run dev --prefix server\""
+    "start": "concurrently \"npm run start --prefix client\" \"npm run serve --prefix server\""
   },
   "keywords": [],
   "author": "",
