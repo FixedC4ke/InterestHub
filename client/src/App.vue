@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header :isLoggedIn="isLoggedIn" :updateState="updateState"/>
+    <Header v-if="currentUser" :currentUser="currentUser" :updateState="updateState"/>
     <b-container>
       <router-view :updateState="updateState"/>
     </b-container>
@@ -18,16 +18,15 @@ export default {
   methods: {
     updateState: async function(){
       let response = await fetch('/getcurrentuser');
-      let data = await response.json();
-      this.isLoggedIn = data.isAuthenticated;
+      this.currentUser = await response.json();
     }
   },
   data () {
     return {
-      isLoggedIn: false
+      currentUser: null
     }
   },
-  mounted () {
+  created () {
     this.updateState();
   }
 }
