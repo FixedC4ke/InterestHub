@@ -20,8 +20,6 @@ export default {
       let response = await fetch('/getcurrentuser');
       let data = await response.json();
       this.isLoggedIn = data.isAuthenticated;
-      console.log(data);
-      console.log(this.isLoggedIn);
     }
   },
   data () {
